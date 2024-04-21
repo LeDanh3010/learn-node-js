@@ -6,6 +6,8 @@ import { engine } from "express-handlebars";
 import { route } from "./routes/index.js";
 import db from "./config/DB/index.js";
 import methodOverride from "method-override";
+import helpers from "./app/helper/handlebars.js";
+import SortMiddleware from "./app/middlewares/SortMiddleware.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -17,6 +19,7 @@ db.connect();
 //method override
 app.use(methodOverride("_method"));
 
+app.use(SortMiddleware.SortMiddleware);
 // app.use(morgan("combined"));
 
 // Serve static files from the 'public' directory
@@ -31,9 +34,7 @@ app.engine(
   ".hbs",
   engine({
     extname: ".hbs",
-    helpers: {
-      sum: (a, b) => a + b,
-    },
+    helpers: helpers.helper,
   })
 );
 app.set("view engine", ".hbs");
